@@ -1,0 +1,21 @@
+/Library/Java/JavaVirtualMachines/jdk-16.0.2.jdk/Contents/Home/bin/java -javaagent:/Applications/IntelliJ IDEA CE.app/Contents/lib/idea_rt.jar=52742:/Applications/IntelliJ IDEA CE.app/Contents/bin -Dfile.encoding=UTF-8 -classpath /Users/jackchou/Documents/libs/opencv.jar:/Users/jackchou/Documents/libs/javacv.jar:/Users/jackchou/Documents/libs/openblas-macosx-x86_64.jar:/Users/jackchou/Documents/libs/opencv-macosx-x86_64.jar:/Users/jackchou/Documents/libs/json-simple-1.1.1.jar:/Users/jackchou/Documents/libs/net-datastructures-4-0.jar:/Users/jackchou/Documents/IdeaProjects/cs10/out/production/cs10 SearchAndRescue
+Initial grid
+	0		1		2		3
+0	0.125	0.125	0.125	0.125
+1	0.125	0.125	0.125	0.125
+
+Most likely location
+Most likely location: row=0 col=0
+Update grid locations
+Invalid coordinates
+Invalid coordinates
+Invalid probability
+After updates
+	0		1		2		3
+0	0.125	0.125	0.125	0.125
+1	0.125	0.300	0.125	0.125
+
+New most likely
+Most likely location: row=1 col=1
+
+Process finished with exit code 0

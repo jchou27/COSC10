@@ -1,0 +1,33 @@
+/Library/Java/JavaVirtualMachines/jdk-16.0.2.jdk/Contents/Home/bin/java -javaagent:/Applications/IntelliJ IDEA CE.app/Contents/lib/idea_rt.jar=50184:/Applications/IntelliJ IDEA CE.app/Contents/bin -Dfile.encoding=UTF-8 -classpath /Users/jackchou/Documents/libs/opencv.jar:/Users/jackchou/Documents/libs/javacv.jar:/Users/jackchou/Documents/libs/openblas-macosx-x86_64.jar:/Users/jackchou/Documents/libs/opencv-macosx-x86_64.jar:/Users/jackchou/Documents/libs/json-simple-1.1.1.jar:/Users/jackchou/Documents/libs/net-datastructures-4-0.jar:/Users/jackchou/Documents/IdeaProjects/cs10/out/production/cs10 Reunion
+Added Alice, rsvp: true
+Added Bob, rsvp: false
+Added Charlie, rsvp: true
+Added Denise, rsvp: false
+Added Elvis, rsvp: true
+Unable to accommodate Falcon '26 Biology, max attendees is 5
+Reunion attendees that have RSVP:
+	Alice
+	Charlie '22 Government
+	Elvis '23 Computer Science
+
+Reunion attendees that have NOT RSVP:
+	Bob
+	Denise '21 Econ
+
+
+
+Update rsvp status
+George not found
+Set RSVP to true for Bob
+Reunion attendees that have RSVP:
+	Alice
+	Bob
+	Charlie '22 Government
+	Elvis '23 Computer Science
+
+Reunion attendees that have NOT RSVP:
+	Denise '21 Econ
+
+
+
+Process finished with exit code 0

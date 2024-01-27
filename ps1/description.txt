@@ -1,0 +1,5 @@
+1. For RegionsTest, you will see a solid color that fills baker library since I set the randomized color outside of the
+regions loop @ the recoloredImage() in RegionFinder
+2. For CamPaint, the user can click on a targetcolor they want from the webcam and the findRegions() @ RegionFinder will
+find the region closes to the targetcolor. The limitations are that it is hard when the user background color is similar
+to the target color or in a dim light setting. I tried to use a bright-colored pencil tip to write the word "HI".
