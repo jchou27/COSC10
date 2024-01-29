@@ -43,6 +43,14 @@ public class RegionFinder {
 		return recoloredImage;
 	}
 
+	public ArrayList<Point> prevBrushColor = null; // used to store the previous brush color
+
+	public Point prevPoint = null; // used to store the previous point
+
+	public Point brushVelocity = null; // used to store the velocity of the brush
+
+
+
 	/**
 	 * Sets regions to the flood-fill regions in the image, similar enough to the trackColor.
 	 */

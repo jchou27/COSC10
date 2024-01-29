@@ -8,21 +8,21 @@ import java.util.List;
  * @source Tim Pierson, Winter 2024, based on binary tree from prior terms
  */
 
-public class BinaryTree<E> {
-	private BinaryTree<E> left, right;	// children; can be null
+public class BinaryTreeRecitation<E> {
+	private BinaryTreeRecitation<E> left, right;	// children; can be null
 	E data;
 
 	/**
 	 * Constructor leaf node -- left and right are null
 	 */
-	public BinaryTree(E data) {
+	public BinaryTreeRecitation(E data) {
 		this.data = data; this.left = null; this.right = null;
 	}
 
 	/**
 	 * Constructor inner node
 	 */
-	public BinaryTree(E data, BinaryTree<E> left, BinaryTree<E> right) {
+	public BinaryTreeRecitation(E data, BinaryTreeRecitation<E> left, BinaryTreeRecitation<E> right) {
 		this.data = data; this.left = left; this.right = right;
 	}
 
@@ -44,10 +44,10 @@ public class BinaryTree<E> {
 		return right != null;
 	}
 
-	public BinaryTree<E> getLeft() {
+	public BinaryTreeRecitation<E> getLeft() {
 		return left;
 	}
-	public BinaryTree<E> getRight() {
+	public BinaryTreeRecitation<E> getRight() {
 		return right;
 	}
 	public E getData() {
@@ -55,10 +55,10 @@ public class BinaryTree<E> {
 	}
 
 	public void setData(E data) {this.data = data;}
-	public void setLeft(BinaryTree<E> child) {
+	public void setLeft(BinaryTreeRecitation<E> child) {
 		left = child;
 	}
-	public void setRight(BinaryTree<E> child) {
+	public void setRight(BinaryTreeRecitation<E> child) {
 		right = child;
 	}
 
@@ -88,7 +88,7 @@ public class BinaryTree<E> {
 	 * @param t2 compare with this tree
 	 * @return true if this tree and t2 have the have structure and same data in each node, false otherwise
 	 */
-	public boolean equals(BinaryTree<E> t2) {
+	public boolean equals(BinaryTreeRecitation<E> t2) {
 		if (hasLeft() != t2.hasLeft() || hasRight() != t2.hasRight()) return false;
 		if (!data.equals(t2.data)) return false;
 		if (hasLeft() && !left.equals(t2.left)) return false;
@@ -179,27 +179,27 @@ public class BinaryTree<E> {
 	}
 
 // produces a copy of the tree down with the same data elements down to its given depth
-	public BinaryTree<E> copyToDepth(int d){
-		if (d == 0) {return new BinaryTree(data);}
-		BinaryTree<E> leftCopy = null;
-		BinaryTree<E> rightCopy = null;
+	public BinaryTreeRecitation<E> copyToDepth(int d){
+		if (d == 0) {return new BinaryTreeRecitation(data);}
+		BinaryTreeRecitation<E> leftCopy = null;
+		BinaryTreeRecitation<E> rightCopy = null;
 		if (hasLeft()){leftCopy = left.copyToDepth(d-1);}
 		if (hasRight()) {rightCopy = right.copyToDepth(d-1);}
-		return new BinaryTree(data, leftCopy, rightCopy);
+		return new BinaryTreeRecitation(data, leftCopy, rightCopy);
 	}
 
 
 	public static void main(String[] args) throws Exception {
 		//manually build a tree
-		BinaryTree<String> root = new BinaryTree<String>("G");
-		root.left = new BinaryTree<String>("B");
-		root.right = new BinaryTree<String>("F");
-		BinaryTree<String>temp = root.left;
-		temp.left = new BinaryTree<String>("A");
-		temp.right = new BinaryTree<String>("C");
+		BinaryTreeRecitation<String> root = new BinaryTreeRecitation<String>("G");
+		root.left = new BinaryTreeRecitation<String>("B");
+		root.right = new BinaryTreeRecitation<String>("F");
+		BinaryTreeRecitation<String> temp = root.left;
+		temp.left = new BinaryTreeRecitation<String>("A");
+		temp.right = new BinaryTreeRecitation<String>("C");
 		temp = root.right;
-		temp.left = new BinaryTree<String>("D");
-		temp.right = new BinaryTree<String>("E");
+		temp.left = new BinaryTreeRecitation<String>("D");
+		temp.right = new BinaryTreeRecitation<String>("E");
 		System.out.println("root");
 		System.out.println(root);
 		
@@ -210,15 +210,15 @@ public class BinaryTree<E> {
 		System.out.println("Contains Z: " + root.contains("Z"));
 
 		//build an identical second tree
-		BinaryTree<String> root2 = new BinaryTree<String>("G");
-		root2.left = new BinaryTree<String>("B");
-		root2.right = new BinaryTree<String>("F");
-		BinaryTree<String>temp2 = root2.left;
-		temp2.left = new BinaryTree<String>("A");
-		temp2.right = new BinaryTree<String>("C");
+		BinaryTreeRecitation<String> root2 = new BinaryTreeRecitation<String>("G");
+		root2.left = new BinaryTreeRecitation<String>("B");
+		root2.right = new BinaryTreeRecitation<String>("F");
+		BinaryTreeRecitation<String> temp2 = root2.left;
+		temp2.left = new BinaryTreeRecitation<String>("A");
+		temp2.right = new BinaryTreeRecitation<String>("C");
 		temp2 = root2.right;
-		temp2.left = new BinaryTree<String>("D");
-		temp2.right = new BinaryTree<String>("E");
+		temp2.left = new BinaryTreeRecitation<String>("D");
+		temp2.right = new BinaryTreeRecitation<String>("E");
 		System.out.println("root");
 		System.out.println(root2);
 
