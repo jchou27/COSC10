@@ -1,0 +1,9 @@
+DotTreeGUI:
+For the test, I first created a new quadtree with a root point at (400, 300), and inserted four more additional points.
+After creating all the points, the method runs a series of tests using the testFind method to see if the points are found
+in the correct quadrant.
+
+Collision GUI test:
+For the test, I first created two static points that were touching each other, which we turn both points to red. Then I
+created two points that were not touching each other, in which the point will be black. Lastly, I tested it when three
+points are colliding with each other, in which all the points turned red.

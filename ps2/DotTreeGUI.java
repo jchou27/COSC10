@@ -204,8 +204,7 @@ public class DotTreeGUI extends InteractiveGUI {
 			test1();
 		}
 		// TODO: YOUR CODE HERE -- your test cases
-		//Dont really know how to build another test case
-		else if (key=='2') {
+		else if (key=='2') { // call test method
 			test2();
 		}
 		repaint(); //erase the window and call draw

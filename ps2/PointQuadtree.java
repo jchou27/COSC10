@@ -112,18 +112,10 @@ public class PointQuadtree<E extends Point2D> {
 		List<E> allPoints = new ArrayList<E>(); // Create new ArrayList to hold all points
 		allPoints.add(point); // add the point of the current quadtree to the ArrayList
 		// add all points from the children of the current quadtree to the ArrayList
-		if (c1 != null) {
-			allPoints.addAll(c1.allPoints());
-		}
-		if (c2 != null) {
-			allPoints.addAll(c2.allPoints());
-		}
-		if (c3 != null) {
-			allPoints.addAll(c3.allPoints());
-		}
-		if (c4 != null) {
-			allPoints.addAll(c4.allPoints());
-		}
+		if (c1 != null) {allPoints.addAll(c1.allPoints());}
+		if (c2 != null) {allPoints.addAll(c2.allPoints());}
+		if (c3 != null) {allPoints.addAll(c3.allPoints());}
+		if (c4 != null) {allPoints.addAll(c4.allPoints());}
 		return allPoints;
 	}	
 
@@ -142,27 +134,18 @@ public class PointQuadtree<E extends Point2D> {
 	}
 
 	// TODO: YOUR CODE HERE for any helper methods
-
-		public void addHit(List<E> listOfPoints, double cx, double cy, double cr){
-		// If the circle intersects the rectangle of the current quadtree, check if the point is in the circle
-			if (Geometry.circleIntersectsRectangle(cx, cy, cr, x1, y1, x2, y2)) {
-				// If the point is in the circle, add it to the ArrayList
-				if (Geometry.pointInCircle(point.getX(), point.getY(), cx, cy, cr)) {
-					listOfPoints.add(point);
-				}
-				// Recursively call addPointInCircle on the children of the current quadtree
-				if (c1 != null) {
-					c1.addHit(listOfPoints, cx, cy, cr);
-				}
-				if (c2 != null) {
-					c2.addHit(listOfPoints, cx, cy, cr);
-				}
-				if (c3 != null) {
-					c3.addHit(listOfPoints, cx, cy, cr);
-				}
-				if (c4 != null) {
-					c4.addHit(listOfPoints, cx, cy, cr);
-				}
+	public void addHit(List<E> listOfPoints, double cx, double cy, double cr){
+	// If the circle intersects the rectangle of the current quadtree, check if the point is in the circle
+		if (Geometry.circleIntersectsRectangle(cx, cy, cr, x1, y1, x2, y2)) {
+			// If the point is in the circle, add it to the ArrayList
+			if (Geometry.pointInCircle(point.getX(), point.getY(), cx, cy, cr)) {
+				listOfPoints.add(point);
 			}
+			// Recursively call addHit on the children of the current quadtree
+			if (c1 != null) {c1.addHit(listOfPoints, cx, cy, cr);}
+			if (c2 != null) {c2.addHit(listOfPoints, cx, cy, cr);}
+			if (c3 != null) {c3.addHit(listOfPoints, cx, cy, cr);}
+			if (c4 != null) {c4.addHit(listOfPoints, cx, cy, cr);}
 		}
+	}
 }

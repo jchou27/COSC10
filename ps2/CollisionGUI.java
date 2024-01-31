@@ -69,6 +69,9 @@ public class CollisionGUI extends InteractiveGUI {
 			collisionHandler = k;
 			System.out.println("collision:"+k);
 		}
+		else if (k == 't') { // test case
+			test0();
+		}
 	}
 
 	/**
@@ -102,9 +105,7 @@ public class CollisionGUI extends InteractiveGUI {
 		PointQuadtree<MovingPoint> tree = new PointQuadtree<MovingPoint>(points.get(0), 0, 0, width, height);
 
 		// Now insert the rest of the points into the quadtree
-		for (int i = 1; i < points.size(); i++) {
-			tree.insert(points.get(i));
-		}
+		for (int i = 1; i < points.size(); i++) {tree.insert(points.get(i));}
 		// Create a list to hold the colliders
 		colliders = new ArrayList<MovingPoint>();
 
@@ -116,7 +117,6 @@ public class CollisionGUI extends InteractiveGUI {
 				colliders.add(points.get(i));
 			}
 		}
-
 	}
 
 	/**
@@ -125,9 +125,7 @@ public class CollisionGUI extends InteractiveGUI {
     @Override
 	public void handleTimer() {
 		// Ask all the points to move themselves.
-		for (MovingPoint point : points) {
-			point.move();
-		}
+		for (MovingPoint point : points) {point.move();}
 		// Check for collisions
 		if (points.size() > 0) {
 			findColliders();
@@ -138,6 +136,36 @@ public class CollisionGUI extends InteractiveGUI {
 		}
 		// Now update the drawing
 		repaint();
+	}
+
+	// Test case, press t to activate
+	public void test0(){
+		// two points touching each other
+		add(300,100);
+		points.get(0).deltaX = 0;
+		points.get(0).deltaY = 0;
+		add(298,98);
+		points.get(1).deltaX = 0;
+		points.get(1).deltaY = 0;
+
+		// two points not touching each other
+		add(100,100);
+		points.get(2).deltaX = 0;
+		points.get(2).deltaY = 0;
+		add(200,200);
+		points.get(3).deltaX = 0;
+		points.get(3).deltaY = 0;
+
+		// three points touching each other
+		add(399,399);
+		points.get(4).deltaX = 0;
+		points.get(4).deltaY = 0;
+		add(402,402);
+		points.get(5).deltaX = 0;
+		points.get(5).deltaY = 0;
+		add(406,406);
+		points.get(6).deltaX = 0;
+		points.get(6).deltaY = 0;
 	}
 
 	public static void main(String[] args) {
