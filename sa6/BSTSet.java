@@ -10,6 +10,11 @@ public class BSTSet<T extends Comparable<T>> implements SimpleSet<T> {
     private BST<T, Object> root = null;
     private int size = 0;
 
+    /**
+     * Add an item to the Set if it is not already present
+     * @param item
+     * @return
+     */
     @Override
     public boolean add(T item) {
         if (root == null) { // if the tree is empty, set the root to the new item
@@ -24,6 +29,11 @@ public class BSTSet<T extends Comparable<T>> implements SimpleSet<T> {
         return true;
     }
 
+    /**
+     * Remove an item from the Set
+     * @param item
+     * @return
+     */
     @Override
     public boolean remove(T item) {
         try { // tries to remove the item from the tree
@@ -35,13 +45,18 @@ public class BSTSet<T extends Comparable<T>> implements SimpleSet<T> {
         return true;
     }
 
+    /**
+     * Clears the entire set by setting root to null
+     */
     @Override
     public void clear() {
         root = null;
         size = 0;
-    } // Clears the entire tree by setting root to null
+    }
 
-
+    /**
+     * Return true if the item is in the Set, false otherwise
+      */
     @Override
     public boolean contains(T item) {
         try { // tries to find the item in the tree
@@ -52,15 +67,27 @@ public class BSTSet<T extends Comparable<T>> implements SimpleSet<T> {
         return true;
     }
 
+    /**
+     * Return true if the Set is empty, false otherwise
+     * @return
+     */
     @Override
     public boolean isEmpty() {
         return size() == 0;
-    } // returns true if the size is 0
+    }
 
+    /**
+     * Returns # elements in the set
+     * @return
+     */
     public int size() {
         return size;
     }
 
+    /**
+     * Returns an iterator to loop over the Set
+     * @return
+     */
     @Override
     public Iterator<T> iterator() {
         return new BSTSetIterator(root);
