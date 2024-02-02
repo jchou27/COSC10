@@ -99,8 +99,8 @@ public class BSTSet<T extends Comparable<T>> implements SimpleSet<T> {
         //constructor
         public BSTSetIterator(BST<T, Object> root) {
             stack = new Stack<BST<T, Object>>(); // Initialize new stack
-            while (root != null) {
-                stack.push(root); // pushes all the nodes in the tree onto the stack
+            if (root != null) {
+                stack.push(root); // pushes root node in the tree onto the stack
             }
         }
 

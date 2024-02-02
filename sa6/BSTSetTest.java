@@ -1,7 +1,10 @@
+import java.util.*;
+
 /**
  * @author Jack Chou
  * @Purpose To test the BSTSet class
  */
+
 public class BSTSetTest {
     public static void main(String[] args) {
         BSTSet<Integer> set = new BSTSet<Integer>();
@@ -10,6 +13,12 @@ public class BSTSetTest {
         set.add(1);
         set.add(2);
         set.add(3);
+        // iterate through the entire set
+        Iterator<Integer> iterator = set.iterator();
+        while (iterator.hasNext()) {
+            Integer item = iterator.next();
+            System.out.println(item);
+        }
         System.out.println(set.isEmpty()); // false
         System.out.println(set.size()); // 3
         System.out.println(set.contains(1)); // true
