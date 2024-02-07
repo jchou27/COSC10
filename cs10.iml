@@ -18,6 +18,7 @@
       <sourceFolder url="file://$MODULE_DIR$/PD4" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/sa6" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/sa6Example" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/sa8" isTestSource="false" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
