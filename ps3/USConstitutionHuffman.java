@@ -3,17 +3,17 @@ import java.util.*;
 
 /**
  * @Author Jack Chou
- * @Purpose To check that the implementation works
+ * @Purpose To check that the implementation works on the US Constitution file
  */
 
-public class HuffmanDriver extends HuffmanImplementation {
+public class USConstitutionHuffman extends HuffmanImplementation {
     public static void main(String[] args) throws Exception {
         // Create a new HuffmanImplementation object
         HuffmanImplementation huffman = new HuffmanImplementation();
         // Create a map to store the frequency of each character
         Map<Character, Long> frequencyMap = new HashMap<>();
         // Read the file and count the frequency of each character
-        frequencyMap = huffman.countFrequencies("ps3/WarAndPeace.txt");
+        frequencyMap = huffman.countFrequencies("ps3/USConstitution.txt");
         // Create a code tree from the frequency map
         BinaryTree<CodeTreeElement> codeTree = huffman.makeCodeTree(frequencyMap);
         // Print the code tree
