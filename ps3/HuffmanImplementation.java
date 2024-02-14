@@ -7,7 +7,6 @@ import java.util.*;
  */
 
 public class HuffmanImplementation implements Huffman{
-
     /**
      * Read file provided in pathName and count how many times each character appears
      * @param pathName - path to a file to read
@@ -19,11 +18,11 @@ public class HuffmanImplementation implements Huffman{
         // Create a map to store the frequency of each character
         HashMap<Character, Long> frequencyMap = new HashMap<>();
         // Read the file and count the frequency of each character
-        try (BufferedReader reader = new BufferedReader(new FileReader(pathName))) {
-            int c;
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader(pathName)); // Read the file
             // Read the file character by character
-            while ((c = reader.read()) != -1) {
-                Character currChar = (char) c;
+            while (reader.ready()) {
+                Character currChar = (char) reader.read();
                 // If char in the map, increment the frequency
                 if (frequencyMap.containsKey(currChar)) {
                     frequencyMap.put(currChar, frequencyMap.get(currChar) + 1);
@@ -31,9 +30,10 @@ public class HuffmanImplementation implements Huffman{
                     frequencyMap.put(currChar, 1L); // Put the character in the map with a frequency of 1
                 }
             }
+            reader.close();
             return frequencyMap;
         } catch (IOException e) { // If file not found, throw an exception
-            throw new IOException("File not found");
+            throw new IOException(e);
         }
     }
 
@@ -45,25 +45,26 @@ public class HuffmanImplementation implements Huffman{
      */
     @Override
     public BinaryTree<CodeTreeElement> makeCodeTree(Map<Character, Long> frequencies) {
+        // Create new priority queue with a comparator that compares the frequency of the trees
+        PriorityQueue<BinaryTree<CodeTreeElement>> queue = new PriorityQueue<>(Comparator.comparingLong(tree -> tree.getData().getFrequency()));
         // if the map is empty, return null
         if (frequencies.isEmpty()) {
             return null;
         }
         if (frequencies.size() == 1) { // if the map has only one entry, return a tree with that entry
-            Map.Entry<Character, Long> entry = frequencies.entrySet().iterator().next(); // Get the only entry in the map
+            Map.Entry<Character, Long> entry = frequencies.entrySet().iterator().next();
             CodeTreeElement treeElement = new CodeTreeElement(entry.getValue(), entry.getKey());
-            return new BinaryTree<>(treeElement);
+            BinaryTree<CodeTreeElement> left = new BinaryTree<>(treeElement);
+            BinaryTree<CodeTreeElement> right = new BinaryTree<>(treeElement);
+            return new BinaryTree<>(new CodeTreeElement(entry.getValue(), null), left, right);
         }
-        // if map has more than one entry, create a priority queue to store the trees.
-        // Create new priority queue with a comparator that compares the frequency of the trees
-        PriorityQueue<BinaryTree<CodeTreeElement>> queue = new PriorityQueue<>(Comparator.comparingLong(tree -> tree.getData().getFrequency()));
         // Add all the trees to the priority queue
         for (Map.Entry<Character, Long> entry : frequencies.entrySet()) {
             queue.add(new BinaryTree<>(new CodeTreeElement(entry.getValue(), entry.getKey())));
         }
         while (queue.size() > 1) {
-            BinaryTree<CodeTreeElement> left = queue.poll(); // Get left tree with the lowest frequency
-            BinaryTree<CodeTreeElement> right = queue.poll(); // Get right tree with the lowest frequency
+            BinaryTree<CodeTreeElement> left = queue.remove(); // Get left tree with the lowest frequency
+            BinaryTree<CodeTreeElement> right = queue.remove(); // Get right tree with the lowest frequency
             // Create a new CodeTreeElement that combines the left tree and right tree's frequencies, c is null bcuz it's an internal node
             CodeTreeElement newElement = new CodeTreeElement(left.getData().getFrequency() + right.getData().getFrequency(), null);
             // Create a new tree with the new element as the root and the left and right trees as children
@@ -72,7 +73,7 @@ public class HuffmanImplementation implements Huffman{
             queue.add(newTree);
         }
         return queue.poll(); // Return the last tree in the queue
-        }
+    }
 
     /**
     * Compute the code for all characters in the tree and enters them into a hash map where the key is a character
@@ -142,7 +143,7 @@ public class HuffmanImplementation implements Huffman{
             }
 
         } catch (IOException e) { // Exception: If no file was given
-            throw new IOException("File not found");
+            throw new IOException(e);
         }
     }
 
@@ -171,7 +172,7 @@ public class HuffmanImplementation implements Huffman{
             bitInput.close();
             output.close();
         } catch (IOException e) { // Exception: If no file was given
-            throw new IOException("File not found");
+            throw new IOException(e);
         }
     }
 }
