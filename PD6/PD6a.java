@@ -6,7 +6,8 @@ import java.util.Set;
 /**
  * Find all connected groups in a graph of cities.
  *
- * @author Tim Pierson, Dartmouth CS10, Winter 2024, based on idea from Pratim Chowdhary
+ * @author Jack Chou
+ * @source Tim Pierson, Dartmouth CS10, Winter 2024, based on idea from Pratim Chowdhary
  */
 public class PD6a {
     /**
