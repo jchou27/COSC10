@@ -32,6 +32,7 @@ public class PD6a {
                 while (!toVisit.isEmpty()) {
                     //remove vertex to visit, mark visited, add to list of connected cities
                     String toVisitCity = toVisit.remove(0);
+                    //Check whether it is visited or not, so we do not add it into the list twice
                     if (!toVisit.contains(toVisitCity)) {
                         visited.add(toVisitCity);
                         connected.add(toVisitCity);
