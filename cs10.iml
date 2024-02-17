@@ -22,6 +22,7 @@
       <sourceFolder url="file://$MODULE_DIR$/ps3" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/sa9" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/PD6" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/ps4" isTestSource="false" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
