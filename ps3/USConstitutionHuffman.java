@@ -35,6 +35,5 @@ public class USConstitutionHuffman extends HuffmanImplementation {
             System.out.println(e);
         }
 
-
     }
 }

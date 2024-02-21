@@ -14,28 +14,25 @@ public class kbGraphLib {
      * @param <E>
      */
     public static <V,E> Graph<V,E> bfs(Graph<V,E> g, V start) {
-        Graph<V,E> bfsTree = new AdjacencyMapGraph<>(); //Create a new graph to store the BFS tree
-        Queue<V> toVisit = new LinkedList<>(); //Create a queue to store the vertices to be visited
+        Graph<V,E> backTrack = new AdjacencyMapGraph<>(); //Create a new graph to store the BFS tree
+        backTrack.insertVertex(start); //Add the start vertex to the BFS tree
         Set<V> visited = new HashSet<>(); //Create a set to store the visited vertices
-        toVisit.add(start); //Add the start vertex to the queue and the set of visited vertices
-        bfsTree.insertVertex(start); //Add the start vertex to the BFS tree
-        visited.add(start); //Mark the start vertex as visited
-        //While there are vertices to visit
-        while (!toVisit.isEmpty()) {
-            V current = toVisit.remove();  //Dequeue the vertex at the front of the toVisit queue
-            //For each out-neighbor of the current vertex
-            for (V neighbor : g.outNeighbors(current)) {
-                //If the neighbor has not been visited
-                if (!visited.contains(neighbor)) {
-                    toVisit.add(neighbor); //Add the neighbor to the queue and the set of visited vertices
-                    bfsTree.insertVertex(neighbor); //Add the neighbor to the BFS tree
-                    //Add an edge from the current vertex to the neighbor in the BFS tree
-                    bfsTree.insertDirected(current, neighbor, g.getLabel(current, neighbor));
-                    visited.add(neighbor); //Mark the neighbor as visited
+        Queue<V> bfsQueue = new LinkedList<>(); //Create a queue to store the vertices to visit
+
+        bfsQueue.add(start); //Add the start vertex to the
+        visited.add(start); //Add the start vertex to the queue and the set of visited vertices
+        while (!bfsQueue.isEmpty()) {
+            V vertex = bfsQueue.remove(); //Remove the vertex from the queue
+            for (V neighbor : g.outNeighbors(vertex)) { //For each out neighbor of the vertex
+                if (!visited.contains(neighbor)) { //If the neighbor has not been visited
+                    visited.add(neighbor); //Add the neighbor to the set of visited vertices
+                    bfsQueue.add(neighbor); //Add the neighbor to the queue
+                    backTrack.insertVertex(neighbor); //Add the neighbor to the backTrack tree
+                    backTrack.insertDirected(neighbor, vertex, null); //Add the edge to the backTrack tree
                 }
             }
         }
-        return bfsTree;
+        return backTrack;
     }
 
     /**
@@ -48,26 +45,19 @@ public class kbGraphLib {
      * @param <E>
      */
     public static <V,E> List<V> getPath(Graph<V,E> tree, V v) {
-        if (!tree.hasVertex(v)) {
-            return null;
+        if (tree.numVertices() == 0 || !tree.hasVertex(v) ) { //if the tree does not have the vertex, return null
+            return new ArrayList<>();
         }
-        List<V> shortestPath = new ArrayList<>(); //create a new linked list that gets the shortest path
-        shortestPath.add(v); //add the vertex to the linked list
-        V current = v; //set the current vertex to the vertex
-        //while the current vertex is not null
-        while (current != null) {
-            // get the in-neighbors of the current vertex
-            for (V neighbor : tree.inNeighbors(current)) {
-                // if there are no in-degree neighbors, set the current vertex to null
-                if (tree.inDegree(neighbor) == 0) {
-                    current = null;
-                } else { // if there are in-degree neighbors
-                    shortestPath.add(neighbor); // add the in-neighbors to the linked list
-                    current = neighbor; // update the current node to the in-neighbor
-                }
-            }
+        List<V> path = new ArrayList<>(); //create a new linked list that gets the shortest path
+        V current = v; //set the current vertex to the start vertex
+        path.add(0, current); //add the current vertex to the path
+        while (tree.outDegree(current) != 0) { //while the out degree of the vertex is not 0
+           for (V neighbor : tree.outNeighbors(current)) { //for each out neighbor of the current vertex
+                    current = neighbor; //set the current vertex to the neighbor
+           }
+           path.add(0, current); //add the current vertex to the path
         }
-        return shortestPath;
+        return path;
     }
 
     /**
@@ -80,15 +70,15 @@ public class kbGraphLib {
      * @param <E>
      */
     public static <V,E> Set<V> missingVertices(Graph<V,E> graph, Graph<V,E> subgraph) {
-        Set<V> missingVertices = new HashSet<>(); //create a new set to store the missing vertices
+        Set<V> missingVerticesSet = new HashSet<>(); //create a new set to store the missing vertices
         //for each vertex in the graph
         for (V vertex : graph.vertices()) {
             //if the subgraph does not have the vertex
-            if (!subgraph.hasVertex()) {
-                missingVertices.add(vertex); //add the vertex to the set of missing vertices
+            if (!subgraph.hasVertex(vertex)) {
+                missingVerticesSet.add(vertex); //add the vertex to the set of missing vertices
             }
         }
-        return missingVertices;
+        return missingVerticesSet;
     }
 
     /**
@@ -101,32 +91,14 @@ public class kbGraphLib {
      * @param <E>
      */
     public static <V,E> double averageSeparation(Graph<V,E> tree, V root) {
-        double tDistance = totalDistance(tree, root, 0); //total distance
-        int tVertices = tree.numVertices(); //total vertices
-        return tDistance / tVertices; //return the average separation
-    }
+        double sum = 0;
 
-    /**
-     * Helper method that takes in a graph, a vertex, and a distance from the root
-     * returns the total distance from the root
-     * @param tree
-     * @param currVert
-     * @param distanceFromRoot
-     * @return
-     * @param <V>
-     * @param <E>
-     */
-    public static <V,E> double totalDistance(Graph<V,E> tree, V currVert, double distanceFromRoot) {
-        //if the root has no out-degree, return the distance from the root
-        if (tree.outDegree(currVert) == 0) {
-            return distanceFromRoot;
+        for (V vertex : tree.vertices()) {
+            if (vertex != root) {
+                List<V> path = getPath(tree, vertex);
+                sum += path.size();
+            }
         }
-        double totalDistance = 0; //create a variable to store the total distance
-        //for each out-neighbor of the root
-        for (V neighbor : tree.outNeighbors(currVert)) {
-            //add the total distance from the root to the out-neighbor to the total distance
-            totalDistance += totalDistance(tree, neighbor, distanceFromRoot + 1);
-        }
-        return totalDistance;
+        return sum / tree.numVertices();
     }
 }
