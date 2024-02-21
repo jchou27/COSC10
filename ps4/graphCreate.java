@@ -23,9 +23,9 @@ public class graphCreate {
      * If not given parameters, use the test files
      */
     public graphCreate() {
-        actorPath = "ps4/data/actorsTest.txt";
-        moviePath = "ps4/data/moviesTest.txt";
-        actorMoviePath = "ps4/data/movie-actorsTest.txt";
+        actorPath = "data/actorsTest.txt";
+        moviePath = "data/moviesTest.txt";
+        actorMoviePath = "data/movie-actorsTest.txt";
     }
 
     /**
@@ -117,8 +117,6 @@ public class graphCreate {
         Map<String, String> actorMap = loadActors(actorPath);
         Map<String, String> movieMap = loadMovies(moviePath);
         Map<String, ArrayList<String>> actorMovieMap = loadActorMovies(actorMoviePath);
-
-
 
         //For each actor in the actor map
         for (String actorID : actorMap.keySet()) {

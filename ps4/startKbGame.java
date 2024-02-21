@@ -5,9 +5,9 @@ import java.util.Set;
 
 public class startKbGame {
     public static void main(String[] args) throws Exception {
-        String actorPath = "ps4/data/actors.txt";
-        String moviePath = "ps4/data/movies.txt";
-        String actorMoviePath = "ps4/data/movie-actors.txt";
+        String actorPath = "data/actors.txt";
+        String moviePath = "data/movies.txt";
+        String actorMoviePath = "data/movie-actors.txt";
 
         graphCreate myGraph = new graphCreate(actorPath, moviePath, actorMoviePath);
         myGraph.buildMap();

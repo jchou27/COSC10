@@ -14,8 +14,8 @@ public class kbGraphLib {
      * @param <E>
      */
     public static <V,E> Graph<V,E> bfs(Graph<V,E> g, V start) {
-        Graph<V,E> backTrack = new AdjacencyMapGraph<>(); //Create a new graph to store the BFS tree
-        backTrack.insertVertex(start); //Add the start vertex to the BFS tree
+        Graph<V,E> bfsTree = new AdjacencyMapGraph<>(); //Create a new graph to store the BFS tree
+        bfsTree.insertVertex(start); //Add the start vertex to the BFS tree
         Set<V> visited = new HashSet<>(); //Create a set to store the visited vertices
         Queue<V> bfsQueue = new LinkedList<>(); //Create a queue to store the vertices to visit
 
@@ -27,12 +27,12 @@ public class kbGraphLib {
                 if (!visited.contains(neighbor)) { //If the neighbor has not been visited
                     visited.add(neighbor); //Add the neighbor to the set of visited vertices
                     bfsQueue.add(neighbor); //Add the neighbor to the queue
-                    backTrack.insertVertex(neighbor); //Add the neighbor to the backTrack tree
-                    backTrack.insertDirected(neighbor, vertex, null); //Add the edge to the backTrack tree
+                    bfsTree.insertVertex(neighbor); //Add the neighbor to the bfsTree tree
+                    bfsTree.insertDirected(neighbor, vertex, null); //Add the edge to the bfsTree tree
                 }
             }
         }
-        return backTrack;
+        return bfsTree;
     }
 
     /**

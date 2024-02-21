@@ -30,25 +30,26 @@ public class kevinBaconGame{
             System.out.print(">");
             String commandInput = in.nextLine();
             String[] key = commandInput.split(" ");
-            if (key[0].equals("c")) {
-                System.out.println("Enter an integer: ");
+
+            if (key[0].equals("c")) { // Doesnt work
+                System.out.println("Enter an integer (positive or negative): ");
                 int input = Integer.parseInt(in.nextLine());
                 rankActors(map, input);
-            } else if (key[0].equals("d")) {
+            } else if (key[0].equals("d")) { // works
                 System.out.println("Enter 'low' or 'high': ");
                 String input = in.nextLine();
                 degree(map, input);
-            } else if (key[0].equals("i")) {
+            } else if (key[0].equals("i")) { // Works
                 infiniteSeparation(map, universe);
-            } else if (key[0].equals("p")) {
+            } else if (key[0].equals("p")) { // Works
                 System.out.println("Enter the name of the actor: ");
                 String input = in.nextLine();
                 V actor = (V) input;
-                path(map, universe, actor);
+                path(universe, map, actor);
             } else if (key[0].equals("s")) {
                 System.out.println("Enter 'low' or 'high': ");
                 String input = in.nextLine();
-                separation(map, input);
+                separation(universe, input);
             } else if (key[0].equals("u")) {
                 System.out.println("Enter the name of the actor: ");
                 String input = in.nextLine();
