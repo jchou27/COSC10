@@ -1,89 +1,92 @@
 import java.util.*;
 
 /**
- * @author Jack Chou
+ * @Author: Jack Chou
+ * @Purpose: This class contains methods for graph operations
  */
 public class kbGraphLib {
     /**
-     * Create a bfs method that takes in a graph and a start vertex
-     * returns a bfs tree of the graph
+     * Breadth-first search
      * @param g
-     * @param start
+     * @param source
      * @return
      * @param <V>
      * @param <E>
      */
-    public static <V,E> Graph<V,E> bfs(Graph<V,E> g, V start) {
-        Graph<V,E> bfsTree = new AdjacencyMapGraph<>(); //Create a new graph to store the BFS tree
-        bfsTree.insertVertex(start); //Add the start vertex to the BFS tree
-        Set<V> visited = new HashSet<>(); //Create a set to store the visited vertices
-        Queue<V> bfsQueue = new LinkedList<>(); //Create a queue to store the vertices to visit
+    public static <V, E> Graph<V, E> bfs(Graph<V, E> g, V source) {
+        Graph<V, E> pathTree = new AdjacencyMapGraph<>();
+        Set<V> visited = new HashSet<>();
+        Queue<V> queue = new LinkedList<>();
 
-        bfsQueue.add(start); //Add the start vertex to the
-        visited.add(start); //Add the start vertex to the queue and the set of visited vertices
-        while (!bfsQueue.isEmpty()) {
-            V vertex = bfsQueue.remove(); //Remove the vertex from the queue
-            for (V neighbor : g.outNeighbors(vertex)) { //For each out neighbor of the vertex
-                if (!visited.contains(neighbor)) { //If the neighbor has not been visited
-                    visited.add(neighbor); //Add the neighbor to the set of visited vertices
-                    bfsQueue.add(neighbor); //Add the neighbor to the queue
-                    bfsTree.insertVertex(neighbor); //Add the neighbor to the bfsTree tree
-                    bfsTree.insertDirected(neighbor, vertex, null); //Add the edge to the bfsTree tree
+        pathTree.insertVertex(source); // Insert the source vertex into the pathTree
+        queue.add(source); // Add the source vertex to the queue
+        visited.add(source);// Add the source vertex to the visited set
+
+        // Loop through the queue
+        while (!queue.isEmpty()) {
+            V u = queue.remove(); // Remove the first vertex from the queue
+            for (V v : g.outNeighbors(u)) { // Loop through the out-neighbors of the vertex
+                if (!visited.contains(v)) { // If the out-neighbor has not been visited
+                    visited.add(v); // Add the out-neighbor to the visited set
+                    queue.add(v); // Add the out-neighbor to the queue
+                    pathTree.insertVertex(v); // Add the out-neighbor to the pathTree
+                    pathTree.insertDirected(v, u, g.getLabel(u, v)); // Add the edge from the out-neighbor to the vertex to the pathTree
                 }
             }
         }
-        return bfsTree;
+        return pathTree;
     }
 
     /**
-     * Create a getPath method that takes in a graph and a start vertex
-     * returns a list of verticies that represent the shortest path from the start vertex to the root in visited order
+     * Get the path from the root to a vertex
      * @param tree
      * @param v
      * @return
      * @param <V>
      * @param <E>
      */
-    public static <V,E> List<V> getPath(Graph<V,E> tree, V v) {
-        if (tree.numVertices() == 0 || !tree.hasVertex(v) ) { //if the tree does not have the vertex, return null
-            return new ArrayList<>();
+    public static <V,E> List<V> getPath(Graph<V,E> tree, V v){
+        List<V> path = new ArrayList<>();
+
+        // If the vertex is not in the tree, return an empty path
+        if(!tree.hasVertex(v)) {
+            return path;
         }
-        List<V> path = new ArrayList<>(); //create a new linked list that gets the shortest path
-        V current = v; //set the current vertex to the start vertex
-        path.add(0, current); //add the current vertex to the path
-        while (tree.outDegree(current) != 0) { //while the out degree of the vertex is not 0
-           for (V neighbor : tree.outNeighbors(current)) { //for each out neighbor of the current vertex
-                    current = neighbor; //set the current vertex to the neighbor
-           }
-           path.add(0, current); //add the current vertex to the path
+
+        V current = v; // Set the current vertex to the input vertex
+        path.add(current); // Add the current vertex to the path
+
+        // Loop through the out-neighbors of the current vertex
+        while (tree.outDegree(current) > 0){
+            current = tree.outNeighbors(current).iterator().next(); // Set the current vertex to the first out-neighbor
+            path.add(current); // Add the current vertex to the path
         }
         return path;
     }
 
     /**
-     * Create a missingVertices method that takes in a graph and a subgraph
-     * Compares the vertices of the graph and the subgraph and returns a set of missing vertices
+     * Get the vertices that are in the graph but not in the subgraph, aka missing vertices
      * @param graph
      * @param subgraph
      * @return
      * @param <V>
      * @param <E>
      */
-    public static <V,E> Set<V> missingVertices(Graph<V,E> graph, Graph<V,E> subgraph) {
-        Set<V> missingVerticesSet = new HashSet<>(); //create a new set to store the missing vertices
-        //for each vertex in the graph
-        for (V vertex : graph.vertices()) {
-            //if the subgraph does not have the vertex
-            if (!subgraph.hasVertex(vertex)) {
-                missingVerticesSet.add(vertex); //add the vertex to the set of missing vertices
+    public static <V,E> Set<V> missingVertices(Graph<V,E> graph, Graph<V,E> subgraph){
+        Set<V> missing = new HashSet<>();
+
+        // Loop through the vertices in the graph
+        for (V v : graph.vertices()){
+            // If the vertex is not in the subgraph, add it to the missing set
+            if (!subgraph.hasVertex(v)){
+                missing.add(v);
             }
         }
-        return missingVerticesSet;
+        return missing;
     }
 
     /**
-     * Create a method that takes in a graph and a root vertex
-     * returns the average separation of the graph
+     * Get the average separation of all vertices from the root
      * @param tree
      * @param root
      * @return
@@ -93,12 +96,106 @@ public class kbGraphLib {
     public static <V,E> double averageSeparation(Graph<V,E> tree, V root) {
         double sum = 0;
 
+        // Loop through the vertices in the tree
         for (V vertex : tree.vertices()) {
+            // If the vertex is not the root
             if (vertex != root) {
-                List<V> path = getPath(tree, vertex);
-                sum += path.size();
+                List<V> path = getPath(tree, vertex); // Get the path from the root to the vertex
+                sum += path.size(); // Add the length of the path to the sum
             }
         }
-        return sum / tree.numVertices();
+        return (sum / tree.numVertices() - 1) ; // subtract 1 to account for the root
     }
+
+    /**
+     * Get the vertices in the graph ordered by in-degree using a map
+     * @param g
+     * @return
+     * @param <V>
+     * @param <E>
+     */
+    public static <V,E> Map<Integer, Set<V>> verticesByInDegree(Graph<V, E> g) {
+        Map<Integer, Set<V>> rankMap = new HashMap<>();
+        // Loop through the vertices in the graph
+        for(V v: g.vertices()) {
+            Integer n = g.inDegree(v); // Get the in-degree of the vertex
+            // If the in-degree is already in the map, add the vertex to the set
+            if (rankMap.containsKey(n)) {
+                rankMap.get(n).add(v);
+            }
+            // If the in-degree is not in the map, create a new set and add the vertex to it
+            else {
+                Set<V> mySet = new HashSet<>();
+                mySet.add(v);
+                rankMap.put(n, mySet);
+            }
+        }
+        return rankMap;
+    }
+
+    /**
+     * Tester
+     * @param args
+     */
+    public static void main(String[] args) {
+        Graph<String, Set<String>> test = new AdjacencyMapGraph<>();
+        String k = "Kevin Bacon";
+        String a = "Alice";
+        String c = "Charlie";
+        String b = "Bob";
+        String d = "Dartmouth (Earl thereof)";
+        String n = "Nobody";
+        String nf = "Nobody's Friend";
+
+        // Insert vertices
+        test.insertVertex(k);
+        test.insertVertex(a);
+        test.insertVertex(c);
+        test.insertVertex(b);
+        test.insertVertex(d);
+        test.insertVertex(n);
+        test.insertVertex(nf);
+
+        // Insert edges, used HashSet to put multiple movies in one edge
+        Set<String> kA = new HashSet<>();
+        kA.add("A Movie");
+        kA.add("E Movie");
+
+        Set<String> kB = new HashSet<>();
+        kB.add("A Movie");
+
+        Set<String> aB = new HashSet<>();
+        aB.add("A Movie");
+
+        Set<String> aC = new HashSet<>();
+        aC.add("D Movie");
+
+        Set<String> bC = new HashSet<>();
+        bC.add("C Movie");
+
+        Set<String> cD = new HashSet<>();
+        cD.add("B Movie");
+
+        Set<String> nNf = new HashSet<>();
+        nNf.add("F Movie");
+
+        test.insertUndirected(k, a, kA);
+        test.insertUndirected(k, b, kB);
+        test.insertUndirected(a, b, aB);
+        test.insertUndirected(a, c, aC);
+        test.insertUndirected(b, c, bC);
+        test.insertUndirected(c, d, cD);
+        test.insertUndirected(n, nf, nNf);
+
+        //Test Output
+        System.out.println((test));
+
+        Graph<String, Set<String>> bfs_result = bfs(test, k);
+        System.out.println(bfs_result);
+
+        System.out.println(getPath(bfs_result, c));
+        System.out.println(missingVertices(test, bfs_result));
+        System.out.println(averageSeparation(bfs_result, k));
+    }
+
 }
