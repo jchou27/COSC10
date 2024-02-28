@@ -16,7 +16,7 @@ public class HelloServer {
 		System.out.println("waiting for someone to connect");
 		ServerSocket listen = new ServerSocket(4242);
 		// When someone connects, create a specific socket for them
-		Socket sock = listen.accept();
+		Socket sock = listen.accept();  // Pause and wait for a connection
 		System.out.println("someone connected");
 
 		// Now talk with them

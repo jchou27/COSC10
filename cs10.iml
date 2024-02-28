@@ -27,6 +27,7 @@
       <sourceFolder url="file://$MODULE_DIR$/PS-4-example" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/data" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/ps5" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/client_server" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/ps5_data" isTestSource="false" />
     </content>
     <orderEntry type="inheritedJdk" />

@@ -45,7 +45,7 @@ public class HelloClient {
 		    System.out.println(line);
 
             // Get user input from keyboard to write to the open socket (sends to server)
-			String name = console.nextLine();
+			String name = console.nextLine(); //blocks execution until enter is pressed
 			out.println(name);
 		}
 		System.out.println("server hung up");
