@@ -59,6 +59,8 @@ public class POSTagger {
 
     /**
      * Helper function to update the map for both observation and transition
+     * @param map
+     * @param key
      */
     public void updateMap(Map<String, Integer> map, String key) {
         // if the key is already in the map
@@ -100,9 +102,10 @@ public class POSTagger {
         }
         Map <String, Double> entry = observation.get(tag); // get the map for the tag
         if (entry.containsKey(word)) { // if the word is in the map
-            return observation.get(tag).get(word); // return the probability
+            return entry.get(word); // return the probability
         } else {
-            return -10.0 ; // did not find the word in the tag map, return unobserved value
+            return -1000.0 ; // did not find the word in the tag map
+            // return unobserved value of -1000
         }
     }
 
@@ -120,19 +123,21 @@ public class POSTagger {
 
     /**
      * Create observation map
+     * @param tagCount
+     * @param tagWordCount
      */
     public void createObservationMap(Map<String, Integer> tagCount , Map<String, Integer> tagWordCount) {
         for (String tagWord : tagWordCount.keySet()) {
             double count = tagWordCount.get(tagWord); // get the count of the tagWord
             String[] split = tagWord.split("_"); // split the tagWord into word and tag
-            if (split.length < 2) { // if the length is not 2
+            if (split.length < 2) { // if the length less than 2
                 continue; // continue
             }
-            String word = split[0]; // get the word
-            String tag = split[1]; // get the tag
+            String tag = split[0]; // get the tag
+            String word = split[1]; // get the word
             if (tagCount.containsKey(tag)) {
                 double total = tagCount.get(tag); // get the total count of the tag
-                double prob = Math.log10(count / total); // calculate the probability
+                double prob = Math.log(count / total); // calculate the probability using natural log
                 setObservationProb(tag, word, prob); // set the observation probability
             }
         }
@@ -140,6 +145,8 @@ public class POSTagger {
 
     /**
      * Create transition map
+     * @param tagCount
+     * @param tagTransitionCount
      */
     public void createTransitionMap(Map<String, Integer> tagCount, Map<String, Integer> tagTransitionCount) {
         for (String tagTransition : tagTransitionCount.keySet()) {
@@ -152,7 +159,7 @@ public class POSTagger {
             String tag2 = split[1]; // get the tag2
             if (tagCount.containsKey(tag1)) {
                 double total = tagCount.get(tag1); // get the total count of the tag1
-                double prob = Math.log10(count / total); // calculate the probability
+                double prob = Math.log(count / total); // calculate the probability
                 setTransitionProb(tag1, tag2, prob); // set the transition probability
             }
         }
@@ -189,8 +196,8 @@ public class POSTagger {
                 String currTag = tags.get(j);
                 String tagTransition = prevTag + "_" + currTag;
 
-                String word = words.get(j);
-                String tagWord = currTag + "_" + word;
+                String currWord = words.get(j);
+                String tagWord = currTag + "_" + currWord;
 
 
                 updateMap(tagCount, currTag); // update the start tag count
@@ -200,12 +207,13 @@ public class POSTagger {
                 prevTag = currTag; // update the start tag
             }
         }
-        createObservationMap(tagCount, wordTagCount); // create the observation map
         createTransitionMap(tagCount, tagTransitionCount); // create the transition map
+        createObservationMap(tagCount, wordTagCount); // create the observation map
     }
 
     /**
      * Viterbi Algorithm
+     * @param words
      */
     public List<String> viterbiAlg(List<String> words) {
         Map<Integer, Map<String, String>> backpointer = new HashMap<>(); // backpointer map
@@ -223,7 +231,7 @@ public class POSTagger {
             Map<String, Double> nextScores = new HashMap<>(); // next score
             for (String currState : currStates) {
                 if (!transition.containsKey(currState)) { // if the current state is not in the transition map
-                    continue; // continue
+                    continue; // move to the next item
                 }
                 Map<String, Double> transitionEntry = transition.get(currState); // get the map for the current state
                 for (String nextState : transitionEntry.keySet()) {
@@ -248,16 +256,16 @@ public class POSTagger {
                     }
                 }
             }
-            currStates = nextStates; // update the current state
-            currScores = nextScores; // update the current score
+            currStates = nextStates; // move to the next state
+            currScores = nextScores; // move to the next score
         }
 
         //To find the highest probability score
         List<String> stateFinalTags = new ArrayList<>(currStates); // list of state names that contains all the possible final state tags
-        String maxCurrState = stateFinalTags.get(0); // current state
-        for (int i = 1; i < stateFinalTags.size(); i++) {
+        String maxCurrState = stateFinalTags.get(0); // set the current state to the score of the first state
+        for (int i = 1; i < stateFinalTags.size(); i++) { // iterate through the stateFinalTags
             // update the current state to the state with the max score
-            if (currScores.get(stateFinalTags.get(i)) > currScores.get(maxCurrState)) {
+            if (currScores.get(stateFinalTags.get(i)) >= currScores.get(maxCurrState)) {
                 maxCurrState = stateFinalTags.get(i);
             }
         }
@@ -266,7 +274,7 @@ public class POSTagger {
         Stack<String> backtrack = new Stack<>(); // stack of state names that contains all the possible final state tags
         backtrack.push(maxCurrState); // push the current state with the maxscore to the stack
         // iterate through the words and find the best path from the end because the start state does not have a backpointer
-        for (int i = words.size() - 1; i > 0; i--) {
+        for (int i = words.size() - 1; i >= 0; i--) {
             maxCurrState = backpointer.get(i).get(maxCurrState); // get the max score state
             backtrack.push(maxCurrState); // push the max score state to the stack
         }
@@ -280,7 +288,6 @@ public class POSTagger {
                 bestPath.add(state); // add the state to the best path
             }
         }
-        System.out.println(bestPath);
         return bestPath; // return the best path
     }
 
@@ -299,11 +306,11 @@ public class POSTagger {
         int tCorrect = 0; // number of correct tags
 
         for (int i = 0; i < lines_Word.size(); i++) {
-            String word = lines_Word.get(i); // get the sentence
-            String tag = lines_Tags.get(i); // get the tags
+            String line_Word = lines_Word.get(i); // get the sentence
+            String line_Tag = lines_Tags.get(i); // get the tags
 
-            List<String> words = Arrays.asList(word.split(" ")); // split the sentence into words
-            List<String> tags = Arrays.asList(tag.split(" ")); // split the tags into tags for words
+            List<String> words = Arrays.asList(line_Word.split(" ")); // split the sentence into words
+            List<String> tags = Arrays.asList(line_Tag.split(" ")); // split the tags into tags for words
             List<String> tagged = viterbiAlg(words); // get the tagged words
 
             tWord += words.size(); // increment the total number of words
@@ -322,18 +329,69 @@ public class POSTagger {
     }
 
 
-    //Still gotta fix this
+    //Hard Coded Test based on recitation example
     public static void exampleTest() {
         POSTagger sudi = new POSTagger(); // create a new POS Tagger
-        String pathName_Sentences = "ps5_data/example-sentences.txt"; // path to the train sentences
-        String pathName_Tags = "ps5_data/example-tags.txt"; // path to the train tags
-        sudi.train(pathName_Sentences, pathName_Tags); // train the POS Tagger
+
+        Map<String, Map<String, Double>> obsMap = sudi.observation;
+        Map<String, Map<String, Double>> transMap = sudi.transition;
+
+        // add POS to transition map
+        transMap.put("#", new HashMap<>());
+        transMap.get("#").put("N", 7.0);
+        transMap.get("#").put("NP", 3.0);
+
+        transMap.put("NP", new HashMap<>());
+        transMap.get("NP").put("V", 8.0);
+        transMap.get("NP").put("CNJ", 2.0);
+
+        transMap.put("CNJ", new HashMap<>());
+        transMap.get("CNJ").put("NP", 2.0);
+        transMap.get("CNJ").put("V", 4.0);
+        transMap.get("CNJ").put("N", 4.0);
+
+        transMap.put("V", new HashMap<>());
+        transMap.get("V").put("NP", 4.0);
+        transMap.get("V").put("CNJ", 2.0);
+        transMap.get("V").put("N", 4.0);
+
+        transMap.put("N", new HashMap<>());
+        transMap.get("N").put("CNJ", 2.0);
+        transMap.get("N").put("V", 8.0);
 
 
+        // add hidden observations and its associated values to observation map
+        obsMap.put("NP", new HashMap<>());
+        obsMap.get("NP").put("chase", 10.0);
+
+        obsMap.put("CNJ", new HashMap<>());
+        obsMap.get("CNJ").put("and", 10.0);
+
+        obsMap.put("N", new HashMap<>());
+        obsMap.get("N").put("cat", 4.0);
+        obsMap.get("N").put("dog", 4.0);
+        obsMap.get("N").put("watch", 2.0);
+
+        obsMap.put("V", new HashMap<>());
+        obsMap.get("V").put("get", 1.0);
+        obsMap.get("V").put("chase", 3.0);
+        obsMap.get("V").put("watch", 6.0);
+
+        //viterbiAlg
+        List<String> words = new ArrayList<>(Arrays.asList("cat", "and", "dog", "chase", "and", "watch", "dog"));
+        System.out.println("Hard Coded Test based on recitation example:");
+        System.out.println(words);
+        System.out.println("Expected: N CNJ N V CNJ V N");
+        List<String> tags = sudi.viterbiAlg(words);
+        System.out.println("Actual: " + tags);
     }
 
+    /**
+     * Run the simple test
+     */
     public static void simpleTest() {
         POSTagger sudi = new POSTagger(); // create a new POS Tagger
+
         String pathName_Sentences = "ps5_data/simple-train-sentences.txt"; // path to the train sentences
         String pathName_Tags = "ps5_data/simple-train-tags.txt"; // path to the train tags
         sudi.train(pathName_Sentences, pathName_Tags); // train the POS Tagger
@@ -358,10 +416,34 @@ public class POSTagger {
         sudi.accuracy(pathName_Sentences_Test, pathName_Tags_Test);
     }
 
+    /**
+     * Console Driven Test
+     */
+    public static void consoleTest() {
+        POSTagger sudi = new POSTagger(); // create a new POS Tagger
+
+        String pathName_Sentences = "ps5_data/brown-train-sentences.txt"; // path to the train sentences
+        String pathName_Tags = "ps5_data/brown-train-tags.txt"; // path to the train tags
+        sudi.train(pathName_Sentences, pathName_Tags); // train the POS Tagger
+
+        System.out.println("Enter the sentence: "); // prompt the user to enter the sentence
+        Scanner scanner = new Scanner(System.in); // create a new scanner
+
+        String sentence = scanner.nextLine(); // get the sentence from the user
+        List<String> words = Arrays.asList(sentence.split(" ")); // split the sentence into words
+        List<String> tags = sudi.viterbiAlg(words);
+        System.out.println(tags); // print the tagged words
+    }
+
     public static void main(String[] args) {
         try {
+            exampleTest();
             simpleTest();
-//            brown();
+            brown();
+            // Did while true so the console can keep asking for input until program is stopped
+            while (true) {
+                consoleTest();
+            }
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }

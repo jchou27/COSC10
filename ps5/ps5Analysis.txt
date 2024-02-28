@@ -1,0 +1,17 @@
+For the hard coded case, I used the recitation HMM as the example and created a sentence using the hidden observation
+to see if it would be able to decode it and return the correct parts of speech. Then, I decided to use the sample files
+and the brown files to test the accuracy of my HMM POS tagger. The sample file returned an accuracy of 86.49% and the
+brown file returned an accuracy of 96.50%. Finally, I decided to run my console driven test file which allows me to write
+any sentence and will return the parts of speech. The return is fairly accurate most of the times with maybe one or two
+mistakes.
+
+I also decided to use natual log instead of log base 10, so I can compare my accuracy to the sample solution.
+The accuracy for the simple test and brown files are similar. The higher the unseen penalty, the lower the accuracy.
+
+Some sentences that I tested in the console driven test:
+
+Jack is walking his dog
+[PRO, V, VG, PRO, N]
+
+I am going to the store
+[PRO, V, VG, P, DET, N]
