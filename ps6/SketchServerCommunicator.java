@@ -66,7 +66,7 @@ public class SketchServerCommunicator extends Thread {
 		}
 	}
 
-	synchronized public void readClient(String msg){
+	 public synchronized void readClient(String msg){
 		if (msg == null){
 			System.err.println("Bad message");
 		}
@@ -76,57 +76,50 @@ public class SketchServerCommunicator extends Thread {
 			return;
 		}
 
-		if (split[0].equals("add")){
-			handleMasterAdd(msg);
-		}
-		else if (split[0].equals("move")){
-			handleMasterMove(msg);
-		}
-		else if (split[0].equals("recolor")){
-			handleMasterRecolor(msg);
-		}
-		else if (split[0].equals("delete")){
-			handleMasterDelete(msg);
-		}
+         switch (split[0]) {
+             case "add" -> handleMasterAdd(msg);
+             case "move" -> handleMasterMove(msg);
+             case "recolor" -> handleMasterRecolor(msg);
+             case "delete" -> handleMasterDelete(msg);
+         }
 	}
 
-	synchronized public void handleMasterAdd(String msg){
+	public synchronized void handleMasterAdd(String msg){
 		String[] split = msg.split(" ");
 		if (split.length < 6)
 			return;
 
 		Shape newShape = null;
 
-		if (split[1].equals("ellipse")){
-			newShape = new Ellipse(Integer.parseInt(split[2]), Integer.parseInt(split[3]), Integer.parseInt(split[4]),
-					Integer.parseInt(split[5]), new Color(Integer.parseInt(split[6])));
-		}
-		else if (split[1].equals("rectangle")){
-			newShape = new Rectangle(Integer.parseInt(split[2]), Integer.parseInt(split[3]), Integer.parseInt(split[4]),
-					Integer.parseInt(split[5]), new Color(Integer.parseInt(split[6])));
-		}
-		else if (split[1].equals("segment")){
-			newShape = new Segment(Integer.parseInt(split[2]), Integer.parseInt(split[3]), Integer.parseInt(split[4]),
-					Integer.parseInt(split[5]), new Color(Integer.parseInt(split[6])));
-		}
-		else if (split[1].equals("freehand")){
-			int size = Integer.parseInt(split[2]);
-			List<Integer> vector_x = new ArrayList<>();
-			List<Integer> vector_y = new ArrayList<>();
-			for (int i=3; i < size - 1; i++){
-				vector_x.add(Integer.parseInt(split[i]));
-			}
-			for (int i=size+3; i < size - 1; i++){
-				vector_y.add(Integer.parseInt(split[i]));
-			}
-			int rgb = Integer.parseInt(split[2 * size + 3]);
-			newShape = new Polyline(vector_x, vector_y, new Color(rgb));
-		}
+        switch (split[1]) {
+            case "ellipse" ->
+                    newShape = new Ellipse(Integer.parseInt(split[2]), Integer.parseInt(split[3]), Integer.parseInt(split[4]),
+                            Integer.parseInt(split[5]), new Color(Integer.parseInt(split[6])));
+            case "rectangle" ->
+                    newShape = new Rectangle(Integer.parseInt(split[2]), Integer.parseInt(split[3]), Integer.parseInt(split[4]),
+                            Integer.parseInt(split[5]), new Color(Integer.parseInt(split[6])));
+            case "segment" ->
+                    newShape = new Segment(Integer.parseInt(split[2]), Integer.parseInt(split[3]), Integer.parseInt(split[4]),
+                            Integer.parseInt(split[5]), new Color(Integer.parseInt(split[6])));
+            case "freehand" -> {
+                int size = Integer.parseInt(split[2]);
+                List<Integer> vector_x = new ArrayList<>();
+                List<Integer> vector_y = new ArrayList<>();
+                for (int i = 3; i < size - 1; i++) {
+                    vector_x.add(Integer.parseInt(split[i]));
+                }
+                for (int i = size + 3; i < size - 1; i++) {
+                    vector_y.add(Integer.parseInt(split[i]));
+                }
+                int rgb = Integer.parseInt(split[2 * size + 3]);
+                newShape = new Polyline(vector_x, vector_y, new Color(rgb));
+            }
+        }
 
 		if (newShape != null){
 			Integer rootID = 1;
 			var map = server.getSketch().getShapeTreeMap();
-			if (map.keySet().size() == 0){
+			if (map.keySet().isEmpty()){
 				map.put(rootID, newShape);
 			}
 			else {
@@ -137,7 +130,7 @@ public class SketchServerCommunicator extends Thread {
 		}
 	}
 
-	synchronized public void handleMasterMove(String msg){
+	 public synchronized void handleMasterMove(String msg){
 		String[] split = msg.split(" ");
 		if (split.length < 4){
 			return;
@@ -150,7 +143,7 @@ public class SketchServerCommunicator extends Thread {
 		}
 	}
 
-	synchronized public void handleMasterRecolor(String msg){
+	 public synchronized void handleMasterRecolor(String msg){
 		String[] split = msg.split(" ");
 		if (split.length < 3){
 			return;
@@ -164,7 +157,7 @@ public class SketchServerCommunicator extends Thread {
 		}
 	}
 
-	synchronized public void handleMasterDelete(String msg){
+	 public synchronized void handleMasterDelete(String msg){
 		String[] split = msg.split(" ");
 		if (split.length < 2){
 			return;

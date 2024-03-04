@@ -13,8 +13,10 @@ public class Sketch {
         return shapeTreeMap;
     }
 
+
+
     public Integer contains(int x, int y){
-        for (Integer id : shapeTreeMap.keySet()){
+        for (Integer id : shapeTreeMap.descendingKeySet()){ //get the top most shape
             if (shapeTreeMap.get(id).contains(x,y)){
                 currentShape = shapeTreeMap.get(id);
                 return id;

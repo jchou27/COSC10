@@ -190,24 +190,21 @@ public class Editor extends JFrame {
 		if (mode == Mode.DRAW) {
 			drawFrom = p;
 			moveFrom = p;
-			if (shapeType.equals("ellipse")) {
-				curr = new Ellipse(drawFrom.x, drawFrom.y, color);
-			}
-			else if (shapeType.equals("freehand")) {
-				List<Integer> xs = new ArrayList<>();
-				List<Integer> ys = new ArrayList<>();
-				xs.add(p.x); ys.add(p.y);
-				curr = new Polyline(xs, ys, color);
-			}
-			else if (shapeType.equals("rectangle")) {
-				curr = new Rectangle(drawFrom.x, drawFrom.y, color);
-			}
-			else if (shapeType.equals("segment")) {
-				curr = new Segment(drawFrom.x, drawFrom.y, color);
-			}
+            switch (shapeType) {
+                case "ellipse" -> curr = new Ellipse(drawFrom.x, drawFrom.y, color);
+                case "freehand" -> {
+                    List<Integer> xs = new ArrayList<>();
+                    List<Integer> ys = new ArrayList<>();
+                    xs.add(p.x);
+                    ys.add(p.y);
+                    curr = new Polyline(xs, ys, color);
+                }
+                case "rectangle" -> curr = new Rectangle(drawFrom.x, drawFrom.y, color);
+                case "segment" -> curr = new Segment(drawFrom.x, drawFrom.y, color);
+            }
 		}
 		else if (mode == Mode.MOVE) {
-			movingId = sketch.contains(p.x,p.y);
+			movingId = sketch.contains(p.x, p.y);
 			if (movingId > 0) {
 				curr = sketch.getShapeTreeMap().get(movingId);
 				moveFrom = p;
@@ -228,6 +225,7 @@ public class Editor extends JFrame {
 		}
 	}
 
+
 	/**
 	 * Helper method for drag to new point
 	 * In drawing mode, update the other corner of the object;
@@ -237,20 +235,25 @@ public class Editor extends JFrame {
 		// TODO: YOUR CODE HERE
 		if (mode == Mode.DRAW) {
 			if (curr != null) {
-				if (shapeType.equals("ellipse")) {
-					((Ellipse) curr).setCorners(drawFrom.x, drawFrom.y, p.x, p.y);
-					moveFrom = new Point(drawFrom.x + (p.x - drawFrom.x) / 2, drawFrom.y + (p.y - drawFrom.y) / 2);
-				} else if (shapeType.equals("rectangle")) {
-					((Rectangle) curr).setCorners(drawFrom.x, drawFrom.y, p.x, p.y);
-					moveFrom = new Point(drawFrom.x + (p.x - drawFrom.x) / 2, drawFrom.y + (p.y - drawFrom.y) / 2);
-				} else if (shapeType.equals("segment")) {
-					((Segment) curr).setEnd(p.x, p.y);
-					moveFrom = new Point((p.x - drawFrom.x) / 2, (p.y - drawFrom.y) / 2);
-				} else if (shapeType.equals("freehand")) {
-					((Polyline) curr).pointsX.add(p.x);
-					((Polyline) curr).pointsY.add(p.y);
-					moveFrom = new Point((p.x - drawFrom.x) / 2, (p.y - drawFrom.y) / 2);
-				}
+                switch (shapeType) {
+                    case "ellipse" -> {
+                        ((Ellipse) curr).setCorners(drawFrom.x, drawFrom.y, p.x, p.y);
+                        moveFrom = new Point(drawFrom.x + (p.x - drawFrom.x) / 2, drawFrom.y + (p.y - drawFrom.y) / 2);
+                    }
+                    case "rectangle" -> {
+                        ((Rectangle) curr).setCorners(drawFrom.x, drawFrom.y, p.x, p.y);
+                        moveFrom = new Point(drawFrom.x + (p.x - drawFrom.x) / 2, drawFrom.y + (p.y - drawFrom.y) / 2);
+                    }
+                    case "segment" -> {
+                        ((Segment) curr).setEnd(p.x, p.y);
+                        moveFrom = new Point((p.x - drawFrom.x) / 2, (p.y - drawFrom.y) / 2);
+                    }
+                    case "freehand" -> {
+                        ((Polyline) curr).pointsX.add(p.x);
+                        ((Polyline) curr).pointsY.add(p.y);
+                        moveFrom = new Point((p.x - drawFrom.x) / 2, (p.y - drawFrom.y) / 2);
+                    }
+                }
 				repaint();
 			}
 		} else if (mode == Mode.MOVE) {
@@ -271,7 +274,9 @@ public class Editor extends JFrame {
 		// TODO: YOUR CODE HERE
 		if (mode == Mode.DRAW){
 			comm.send("add " + curr.toString());
-			curr = null;
+		}
+		else if (mode == Mode.MOVE) {
+			moveFrom = null;
 		}
 	}
 

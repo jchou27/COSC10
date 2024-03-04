@@ -40,7 +40,6 @@ public class Polyline implements Shape {
 
 	@Override
 	public boolean contains(int x, int y) {
-
 		for (int i = 0; i < pointsX.size() - 1; i++){
 			int x1 = pointsX.get(i);
 			int x2 = pointsX.get(i + 1);
