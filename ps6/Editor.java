@@ -13,6 +13,7 @@ import java.util.List;
  * @author Travis Peters, Dartmouth CS 10, Winter 2015; remove EditorCommunicatorStandalone (use echo server for testing)
  * @author CBK, spring 2016 and Fall 2016, restructured Shape and some of the GUI
  * @author Tim Pierson Dartmouth CS 10, provided for Winter 2024
+ * @author Jack Chou, modified TODO sections and added handle methods
  */
 
 public class Editor extends JFrame {	

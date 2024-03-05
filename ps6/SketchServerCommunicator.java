@@ -12,6 +12,7 @@ import java.util.List;
  *
  * @author Chris Bailey-Kellogg, Dartmouth CS 10, Fall 2012; revised Winter 2014 to separate SketchServerCommunicator
  * @author Tim Pierson Dartmouth CS 10, provided for Winter 2024
+ * @author Jack Chou, modified TODO sections and added handle master methods
  */
 public class SketchServerCommunicator extends Thread {
 	private Socket sock;					// to talk with client

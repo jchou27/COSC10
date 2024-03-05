@@ -1,6 +1,10 @@
 import java.awt.*;
 import java.util.TreeMap;
 
+/**
+ * A sketch is a collection of shapes
+ * @author Jack Chou
+ */
 public class Sketch {
     public TreeMap<Integer, Shape> shapeTreeMap; //id, shape
     public Shape currentShape; //the shape that is currently being manipulated

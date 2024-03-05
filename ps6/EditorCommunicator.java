@@ -15,6 +15,7 @@ import java.util.List;
  * @author Chris Bailey-Kellogg; overall structure substantially revised Winter 2014
  * @author Travis Peters, Dartmouth CS 10, Winter 2015; remove EditorCommunicatorStandalone (use echo server for testing)
  * @author Tim Pierson Dartmouth CS 10, provided for Winter 2024
+ * @author Jack Chou, modified TODO sections and added handle methods
  */
 public class EditorCommunicator extends Thread {
 	private PrintWriter out;		// to server
