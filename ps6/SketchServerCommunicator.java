@@ -45,14 +45,14 @@ public class SketchServerCommunicator extends Thread {
 
 			// Tell the client the current state of the world
 			// TODO: YOUR CODE HERE
-			send(server.getSketch().toString());
+			send(server.getSketch().toString()); // send the current state of the world to the client
 
 			// Keep getting and handling messages from the client
 			// TODO: YOUR CODE HERE
-			String line;
-			while ((line = in.readLine()) != null) {
-				System.out.println("recived: " + line);
-				readClient(line);
+			String line; // read the message from the client
+			while ((line = in.readLine()) != null) { // keep reading messages from the client
+				System.out.println("received: " + line); // print the message from the client
+				readClient(line); // handle the message from the client
 			}
 
 			// Clean up -- note that also remove self from server's list so it doesn't broadcast here
@@ -66,32 +66,40 @@ public class SketchServerCommunicator extends Thread {
 		}
 	}
 
+	/**
+	 * Handles a message from the client
+	 * @param msg
+	 */
 	 public synchronized void readClient(String msg){
-		if (msg == null){
+		if (msg == null){ // if no message, print "Bad message"
 			System.err.println("Bad message");
 		}
-		String[] split = msg.split(" ");
-		if (split.length < 2){
+		String[] split = msg.split(" "); // split the message
+		if (split.length < 2){ // if the message is less than 2, print "Bad message" and return
 			System.err.println("Bad message");
 			return;
 		}
 
-         switch (split[0]) {
-             case "add" -> handleMasterAdd(msg);
-             case "move" -> handleMasterMove(msg);
-             case "recolor" -> handleMasterRecolor(msg);
-             case "delete" -> handleMasterDelete(msg);
+         switch (split[0]) { // check the message at the zero index
+             case "add" -> handleMasterAdd(msg); // if the message is "add", call the handleMasterAdd method
+             case "move" -> handleMasterMove(msg); // if the message is "move", call the handleMasterMove method
+             case "recolor" -> handleMasterRecolor(msg); // if the message is "recolor", call the handleMasterRecolor method
+             case "delete" -> handleMasterDelete(msg); // if the message is "delete", call the handleMasterDelete method
          }
 	}
 
+	/**
+	 * Handles a message from the client to add a new shape to the sketch
+	 * @param msg
+	 */
 	public synchronized void handleMasterAdd(String msg){
-		String[] split = msg.split(" ");
-		if (split.length < 6)
+		String[] split = msg.split(" "); // split the message
+		if (split.length < 6) // if the message is less than 6, return and do nothing
 			return;
 
-		Shape newShape = null;
+		Shape newShape = null; // create a new shape and set it to null
 
-        switch (split[1]) {
+        switch (split[1]) { // check the message at the first index
             case "ellipse" ->
                     newShape = new Ellipse(Integer.parseInt(split[2]), Integer.parseInt(split[3]), Integer.parseInt(split[4]),
                             Integer.parseInt(split[5]), new Color(Integer.parseInt(split[6])));
@@ -102,68 +110,80 @@ public class SketchServerCommunicator extends Thread {
                     newShape = new Segment(Integer.parseInt(split[2]), Integer.parseInt(split[3]), Integer.parseInt(split[4]),
                             Integer.parseInt(split[5]), new Color(Integer.parseInt(split[6])));
             case "freehand" -> {
-                int size = Integer.parseInt(split[2]);
-                List<Integer> vector_x = new ArrayList<>();
-                List<Integer> vector_y = new ArrayList<>();
-                for (int i = 3; i < size - 1; i++) {
-                    vector_x.add(Integer.parseInt(split[i]));
+                int size = Integer.parseInt(split[2]); // get the size of the message from the second index
+                List<Integer> pointsX = new ArrayList<>(); // create a new list of x-coordinate of points
+                List<Integer> pointsY = new ArrayList<>(); // create a new list of y-coordinate of points
+                for (int i = 3; i < size + 3; i++) { // loop through the message, since X coordinate starts at the third index until end of X coordinate list (size + 3)
+                    pointsX.add(Integer.parseInt(split[i])); // add the x-coordinate to the list
                 }
-                for (int i = size + 3; i < size - 1; i++) {
-                    vector_y.add(Integer.parseInt(split[i]));
+                for (int i = size + 3; i < 2 * size + 3 ; i++) { // loop through the message, since Y coordinate ends at the 2 * (size + 3) index
+                    pointsY.add(Integer.parseInt(split[i])); // add the y-coordinate to the list
                 }
-                int rgb = Integer.parseInt(split[2 * size + 3]);
-                newShape = new Polyline(vector_x, vector_y, new Color(rgb));
+                int rgb = Integer.parseInt(split[2 * size + 3]); // get the color of the message from the last index of the msg representation
+                newShape = new Polyline(pointsX, pointsY, new Color(rgb)); // create a new polyline shape
             }
         }
 
-		if (newShape != null){
-			Integer rootID = 1;
-			var map = server.getSketch().getShapeTreeMap();
-			if (map.keySet().isEmpty()){
-				map.put(rootID, newShape);
+		if (newShape != null){ // if the new shape is not null
+			Integer rootID = 1; // set the rootID to 1
+			var map = server.getSketch().getShapeTreeMap(); // get the shape tree map from the server
+			if (map.keySet().isEmpty()){ // if the map is empty
+				map.put(rootID, newShape); // put the new shape to the map
 			}
-			else {
-				Integer newID = map.lastEntry().getKey() + 1;
-				map.put(newID, newShape);
+			else { // if the map is not empty
+				Integer newID = map.lastEntry().getKey() + 1; // get the last id of the map and add 1 to it
+				map.put(newID, newShape); // put the new shape to the map
 			}
-			server.broadcast("add " + newShape);
+			server.broadcast("add " + newShape); // broadcast the new shape to the server
 		}
 	}
 
+	/**
+	 * Handles a message from the client to move a shape in the sketch
+	 * @param msg
+	 */
 	 public synchronized void handleMasterMove(String msg){
-		String[] split = msg.split(" ");
-		if (split.length < 4){
+		String[] split = msg.split(" "); // split the message
+		if (split.length < 4){ // if the message is less than 4, return and do nothing
 			return;
 		}
-		Integer id = Integer.parseInt(split[1]);
-		Shape shape = server.getSketch().getShapeTreeMap().get(id);
-		if (shape != null) {
-			shape.moveBy(Integer.parseInt(split[2]), Integer.parseInt(split[3]));
-			server.broadcast(msg);
+		Integer id = Integer.parseInt(split[1]); // get the id of the message from the first index
+		Shape shape = server.getSketch().getShapeTreeMap().get(id); // get the shape from the server
+		if (shape != null) { // if there is a shape
+			shape.moveBy(Integer.parseInt(split[2]), Integer.parseInt(split[3])); // move the shape by the dx and dy  (p - moveFrom)
+			server.broadcast(msg); // broadcast the message to the server
 		}
 	}
 
+	/**
+	 * Handles a message from the client to recolor a shape in the sketch
+	 * @param msg
+	 */
 	 public synchronized void handleMasterRecolor(String msg){
-		String[] split = msg.split(" ");
-		if (split.length < 3){
+		String[] split = msg.split(" "); // split the message
+		if (split.length < 3){ // if the message is less than 3, return and do nothing
 			return;
 		}
-		Integer id = Integer.parseInt(split[1]);
-		Color color = new Color(Integer.parseInt(split[2]));
-		Shape shape = server.getSketch().getShapeTreeMap().get(id);
-		if (shape != null) {
-			shape.setColor(color);
-			server.broadcast(msg);
+		Integer id = Integer.parseInt(split[1]); // get the id of the message from the first index
+		Color color = new Color(Integer.parseInt(split[2])); // get the color of the message from the second index
+		Shape shape = server.getSketch().getShapeTreeMap().get(id); // get the shape from the server
+		if (shape != null) { // if there is a shape
+			shape.setColor(color); // set the color of the shape
+			server.broadcast(msg); // broadcast the message to the server
 		}
 	}
 
+	/**
+	 * Handles a message from the client to delete a shape from the sketch
+	 * @param msg
+	 */
 	 public synchronized void handleMasterDelete(String msg){
-		String[] split = msg.split(" ");
-		if (split.length < 2){
+		String[] split = msg.split(" "); // split the message
+		if (split.length < 2){ // if the message is less than 2, return and do nothing
 			return;
 		}
-		Integer id = Integer.parseInt(split[1]);
-		server.getSketch().deleteShape(id);
-		server.broadcast(msg);
+		Integer id = Integer.parseInt(split[1]); // get the id of the message from the first index
+		server.getSketch().deleteShape(id); // delete the shape from the server
+		server.broadcast(msg); // broadcast the message to the server
 	}
 }

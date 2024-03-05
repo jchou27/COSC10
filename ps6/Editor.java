@@ -170,9 +170,9 @@ public class Editor extends JFrame {
 	 */
 	public void drawSketch(Graphics g) {
 		// TODO: YOUR CODE HERE
-		sketch.draw(g);
+		sketch.draw(g); // draw the sketch and store the shapes in the sketch
 		if (curr != null) {
-			curr.draw(g);
+			curr.draw(g); // draw the shape that is being manipulated by the user
 		}
 	}
 
@@ -187,40 +187,40 @@ public class Editor extends JFrame {
 	 */
 	private void handlePress(Point p) {
 		// TODO: YOUR CODE HERE
-		if (mode == Mode.DRAW) {
-			drawFrom = p;
-			moveFrom = p;
-            switch (shapeType) {
+		if (mode == Mode.DRAW) { // draw new shape and set drawFrom
+			drawFrom = p; // set drawFrom to the point
+			curr = null; // set the current shape to null
+			moveFrom = p; // set moveFrom to the point
+            switch (shapeType) { // check the shape type
                 case "ellipse" -> curr = new Ellipse(drawFrom.x, drawFrom.y, color);
                 case "freehand" -> {
-                    List<Integer> xs = new ArrayList<>();
-                    List<Integer> ys = new ArrayList<>();
-                    xs.add(p.x);
-                    ys.add(p.y);
-                    curr = new Polyline(xs, ys, color);
+                    List<Integer> xs = new ArrayList<>(); // create a new list of x-coordinate of points
+                    List<Integer> ys = new ArrayList<>(); // create a new list of y-coordinate of points
+                    xs.add(p.x); // add the x-coordinate to the list
+                    ys.add(p.y); // add the y-coordinate to the list
+                    curr = new Polyline(xs, ys, color); // create a new polyline shape
                 }
                 case "rectangle" -> curr = new Rectangle(drawFrom.x, drawFrom.y, color);
                 case "segment" -> curr = new Segment(drawFrom.x, drawFrom.y, color);
             }
 		}
-		else if (mode == Mode.MOVE) {
-			movingId = sketch.contains(p.x, p.y);
-			if (movingId > 0) {
-				curr = sketch.getShapeTreeMap().get(movingId);
-				moveFrom = p;
-				handleDrag(p);
+		else if (mode == Mode.MOVE) { // move if clicked in shape
+			movingId = sketch.contains(p.x, p.y); // get the id of the shape that is being moved
+			if (movingId > 0) { // if the id is greater than 0
+				curr = sketch.getShapeTreeMap().get(movingId); // get the shape from the sketch
+				moveFrom = p; // set moveFrom to the point
 			}
 		}
-		else if (mode == Mode.RECOLOR) {
-			movingId = sketch.contains(p.x, p.y);
-			if (movingId > 0) {
-				comm.send("recolor " + movingId + " " + color.getRGB());
+		else if (mode == Mode.RECOLOR) { // recolor
+			movingId = sketch.contains(p.x, p.y); // get the id of the shape that is being recolored
+			if (movingId > 0) { // if the id is greater than 0
+				comm.send("recolor " + movingId + " " + color.getRGB()); // send the recolor message to the server
 			}
 		}
-		else if (mode == Mode.DELETE) {
-			movingId = sketch.contains(p.x,p.y);
-			if (sketch != null && movingId > 0){
-				comm.send("delete " + movingId);
+		else if (mode == Mode.DELETE) { // delete
+			movingId = sketch.contains(p.x,p.y); // get the id of the shape that is being deleted
+			if (sketch != null && movingId > 0){ // if the sketch is not null and the id is greater than 0
+				comm.send("delete " + movingId); // send the delete message to the server
 			}
 		}
 	}
@@ -233,11 +233,12 @@ public class Editor extends JFrame {
 	 */
 	private void handleDrag(Point p) {
 		// TODO: YOUR CODE HERE
-		if (mode == Mode.DRAW) {
-			if (curr != null) {
-                switch (shapeType) {
+		if (mode == Mode.DRAW) { // draw
+			if (curr != null) { // if the current shape is not null
+                switch (shapeType) { // check the shape type
                     case "ellipse" -> {
                         ((Ellipse) curr).setCorners(drawFrom.x, drawFrom.y, p.x, p.y);
+						//creates a new point in the center of the shape
                         moveFrom = new Point(drawFrom.x + (p.x - drawFrom.x) / 2, drawFrom.y + (p.y - drawFrom.y) / 2);
                     }
                     case "rectangle" -> {
@@ -254,15 +255,14 @@ public class Editor extends JFrame {
                         moveFrom = new Point((p.x - drawFrom.x) / 2, (p.y - drawFrom.y) / 2);
                     }
                 }
-				repaint();
 			}
-		} else if (mode == Mode.MOVE) {
-			if (curr != null && moveFrom != null && curr.contains(p.x, p.y)) {
-				comm.send("move " + movingId + " " + (p.x - moveFrom.x) + " " + (p.y - moveFrom.y));
-				moveFrom = p;
-				repaint();
+		} else if (mode == Mode.MOVE) { // move
+			if (curr != null && moveFrom != null && curr.contains(p.x, p.y)) { // if there is a current shape and a moveFrom point and the current shape contains the point
+				comm.send("move " + movingId + " " + (p.x - moveFrom.x) + " " + (p.y - moveFrom.y)); // send the move message to the server
+				moveFrom = p; // set moveFrom to the point
 			}
 		}
+		repaint(); // refresh the canvas
 	}
 
 	/**
@@ -272,12 +272,14 @@ public class Editor extends JFrame {
 	 */
 	private void handleRelease() {
 		// TODO: YOUR CODE HERE
-		if (mode == Mode.DRAW){
-			comm.send("add " + curr.toString());
+		if (mode == Mode.DRAW){ // draw
+			comm.send("add " + curr.toString()); // send the add message to the server
+			curr = null; // set the current shape to null so it does not draw the shape again
 		}
-		else if (mode == Mode.MOVE) {
-			moveFrom = null;
+		else if (mode == Mode.MOVE) { // move
+			moveFrom = null; // set moveFrom to null
 		}
+		repaint();
 	}
 
 	public void delete(){
