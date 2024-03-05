@@ -31,6 +31,7 @@
       <sourceFolder url="file://$MODULE_DIR$/PD8" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/ps5_data" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/PS6_example" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/ps1_ImageProcessing" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/ps6" isTestSource="false" />
     </content>
     <orderEntry type="inheritedJdk" />
