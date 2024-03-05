@@ -1,0 +1,5 @@
+An unexpected multi-client issues include conflicted command conditions where two or more client try to modify
+the same data (shape in this case) simultaneously, leading to inconsistent states. Another one is deadlocks where
+two or more clients are waiting for each other to release a resource. To prevent this, we can use synchronized to make
+sure that only one thread can access the method at a time. But this could impact performance as it would force clients
+to wait for each other to finish before modifying the sketch.
