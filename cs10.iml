@@ -32,7 +32,12 @@
       <sourceFolder url="file://$MODULE_DIR$/ps5_data" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/PS6_example" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/ps1_ImageProcessing" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/ps2_quadTree" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/ps3_Huffman" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/ps4_kevinBacon" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/ps5_POSTaggerHMM" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/ps6" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/ps6_collaborativeDraw" isTestSource="false" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

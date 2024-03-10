@@ -61,13 +61,15 @@ public class CamPaint extends VideoGUI {
 						clearPainting();
 					}
 					ArrayList<Point> brush = finder.largestRegion(); //Use the largest region as the brush
-					for (Point p : brush) {
-						painting.setRGB(p.x, p.y, paintColor.getRGB()); // Paint every pixel
+					if (brush != null) { // if the brush is not null
+						for (Point p : brush) { // for every point in the brush
+							painting.setRGB(p.x, p.y, paintColor.getRGB()); // Paint every pixel
+						}
 					}
 					setImage1(image); //Left Image is webcam
 					setImage2(painting); //Right image is painting
 				}
-				super.handleImage();
+				super.handleImage(); // display the image
 			}
 		}
 	}
@@ -80,7 +82,9 @@ public class CamPaint extends VideoGUI {
 	public void handleMousePress(int x, int y) {
 		// TODO: YOUR CODE HERE
 		super.handleMousePress(x, y);
-		targetColor = new Color(image.getRGB(x, y));
+		if (image != null) { // if the image is not null
+			targetColor = new Color(image.getRGB(x, y)); // set the target color to the color of the pixel at x, y
+		}
 	}
 
 	/**
